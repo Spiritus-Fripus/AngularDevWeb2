@@ -1,0 +1,85 @@
+<form class="formulaire" (ngSubmit)="onSubmit()" [formGroup]="formulaire">
+  <mat-form-field>
+    <mat-label>Nom</mat-label>
+    <input matInput placeholder="Ex : Expresso" formControlName="nom" />
+
+    @if (formulaire.get('nom')?.hasError('required')) {
+    <mat-error>Le nom est obligatoire</mat-error>
+    } @if (formulaire.get('nom')?.hasError('minlength')) {
+    <mat-error>Le nom doit avoir 3 caractères minimum</mat-error>
+    } @if (formulaire.get('nom')?.hasError('maxlength')) {
+    <mat-error>Le nom doit avoir 100 caractères maximum</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      placeholder="Ex : Description du cafe ..."
+      formControlName="description"
+    ></textarea>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Prix</mat-label>
+    <input min="0.01" matInput type="number" formControlName="prix" />
+
+    @if (formulaire.get('prix')?.hasError('required')) {
+    <mat-error>Le prix est obligatoire</mat-error>
+    } @if (formulaire.get('prix')?.hasError('min')) {
+    <mat-error>Le prix doit être positif</mat-error>
+    }
+  </mat-form-field>
+
+  <div style="display: flex; align-items: center; margin-bottom: 0.5em">
+    @if (urlImage) {
+    <img
+      style="width: 100px; object-fit: contain; border-radius: 10px"
+      src="http://localhost/angular-php/upload/{{ urlImage }}"
+    />
+    } @if(thumbnail){
+    <img
+      style="width: 100px; object-fit: contain; border-radius: 10px"
+      [attr.src]="thumbnail"
+    />
+    } @if (urlImage || filesSelected){
+    <button
+      mat-mini-fab
+      color="warn"
+      type="button"
+      (click)="onDeleteImg()"
+      style="margin-left: 10px; margin-right: 10px"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+    }
+
+    <input
+      #selectFiles
+      type="file"
+      style="display: none"
+      (change)="onFilesSelect($event)"
+    />
+
+    <button
+      mat-mini-fab
+      color="primary"
+      type="button"
+      (click)="selectFiles.click()"
+    >
+      <mat-icon>attach_file</mat-icon>
+    </button>
+
+    <span style="margin-left: 0.5em">{{
+      this.filesSelected
+        ? this.filesSelected.name
+        : urlImage
+        ? "Modifier le fichier"
+        : "Aucun fichier selectionné"
+    }}</span>
+  </div>
+  <button mat-raised-button type="submit" color="primary">
+    {{ id == null ? "Ajouter l'article" : "modifier l'article" }}
+  </button>
+</form>
